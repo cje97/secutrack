@@ -1,5 +1,5 @@
 # ---------- Étape 1 : build avec Maven ----------
-FROM maven:3.9-eclipse-temurin-21 AS build
+FROM maven:3.9-eclipse-temurin-26 AS build
 WORKDIR /app
 # Les dépendances d'abord : cette couche reste en cache tant que pom.xml ne change pas
 COPY pom.xml .
