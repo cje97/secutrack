@@ -1,10 +1,18 @@
 # Dependabot ouvre des pull requests de mise à jour des dépendances (vigie automatisée).
+# Les "ignore" ci-dessous sont des décisions d'équipe, versionnées et relues comme le reste du code.
 version: 2
 updates:
   - package-ecosystem: maven
     directory: /backend
     schedule:
       interval: weekly
+    ignore:
+      # Spring Boot 4 et springdoc 3 : migration planifiée dans le ticket SEC-10, pas en un clic
+      - dependency-name: "org.springframework.boot:spring-boot-starter-parent"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "org.springdoc:springdoc-openapi-starter-webmvc-ui"
+        update-types: ["version-update:semver-major"]
+
   - package-ecosystem: npm
     directory: /frontend
     schedule:
@@ -12,11 +20,23 @@ updates:
     groups:
       angular:
         patterns: ["@angular/*", "@angular-devkit/*"]
+    ignore:
+      # Angular 22 ne supporte pas TypeScript 7
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: monthly
+
   - package-ecosystem: docker
     directories: ["/backend", "/frontend"]
     schedule:
       interval: monthly
+    ignore:
+      # On reste sur les versions LTS : Java 21 et Node 24
+      - dependency-name: "eclipse-temurin"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "node"
+        update-types: ["version-update:semver-major"]
