@@ -1,0 +1,110 @@
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin will define CSS variables that are used for styling Angular Material
+// components according to the Material 3 design spec.
+// Learn more about theming and how to use it for your application's
+// custom components at https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+
+html {
+  height: 100%;
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+}
+
+body {
+  // Default the application to a light color theme. This can be changed to
+  // `dark` to enable the dark color theme, or to `light dark` to defer to the
+  // user's system settings.
+  color-scheme: light;
+
+  // Set a default background, font and text colors for the application using
+  // Angular Material's system-level CSS variables. Learn more about these
+  // variables at https://material.angular.dev/guide/system-variables
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+
+  // Reset the user agent margin.
+  margin: 0;
+  height: 100%;
+}
+/* You can add global styles to this file, and also import other style files */
+
+/* ---------- Styles communs SecuTrack ---------- */
+mat-form-field {
+  width: 100%;
+}
+.filtres mat-form-field,
+.gestion mat-form-field,
+.ligne mat-form-field {
+  width: auto;
+}
+.alerte {
+  padding: 0.75rem 1rem;
+  border-left: 4px solid #dc2626;
+  background: #fef2f2;
+  color: #991b1b;
+  border-radius: 4px;
+}
+.erreur-serveur {
+  margin: -0.75rem 0 0.5rem;
+  font-size: 0.8rem;
+  color: #b91c1c;
+}
+.bouton-danger {
+  --mat-button-filled-container-color: #b91c1c;
+  --mat-button-filled-label-text-color: white;
+}
+.snack-erreur {
+  --mat-snack-bar-container-color: #7f1d1d;
+}
+
+/* Pastilles de sévérité et de statut */
+.pastille {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.severite-FAIBLE {
+  background: #ecfdf5;
+  color: #047857;
+}
+.severite-MOYENNE {
+  background: #fefce8;
+  color: #a16207;
+}
+.severite-ELEVEE {
+  background: #fff7ed;
+  color: #c2410c;
+}
+.severite-CRITIQUE {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+.statut-OUVERT {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+.statut-EN_COURS {
+  background: #f5f3ff;
+  color: #6d28d9;
+}
+.statut-RESOLU {
+  background: #ecfdf5;
+  color: #047857;
+}
+.statut-FERME {
+  background: #f3f4f6;
+  color: #4b5563;
+}

@@ -1,0 +1,75 @@
+<!--
+  connexion.html
+  Page de connexion. Les boutons de démo remplissent le formulaire avec un compte ADMIN ou USER.
+  Rappel de syntaxe : {{ x }} affiche une valeur ; [prop]="x" passe une valeur ; (evt)="f()" réagit à un événement ;
+  @if / @for : affichage conditionnel et boucle ; signal() se lit avec des parenthèses.
+-->
+<div class="page-auth">
+  <mat-card appearance="outlined">
+    <mat-card-header>
+      <mat-icon mat-card-avatar>shield_lock</mat-icon>
+      <mat-card-title>Connexion à SecuTrack</mat-card-title>
+      <mat-card-subtitle>Gestion des tickets de sécurité</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (erreur(); as message) {
+        <p class="alerte" role="alert">{{ message }}</p>
+      }
+
+      <!-- [formGroup] relie le formulaire HTML au FormGroup du composant ; (ngSubmit) appelle connecter() -->
+      <form [formGroup]="form" (ngSubmit)="connecter()" novalidate>
+        <mat-form-field>
+          <mat-label>Courriel</mat-label>
+          <!-- formControlName : relie ce champ au contrôle "courriel" du FormGroup -->
+          <input matInput type="email" formControlName="courriel" autocomplete="username" />
+          @if (form.controls.courriel.hasError('required')) {
+            <mat-error>Le courriel est obligatoire</mat-error>
+          } @else if (form.controls.courriel.hasError('email')) {
+            <mat-error>Courriel invalide</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Mot de passe</mat-label>
+          <input
+            matInput
+            [type]="masquerMotDePasse() ? 'password' : 'text'"
+            formControlName="motDePasse"
+            autocomplete="current-password"
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="masquerMotDePasse.set(!masquerMotDePasse())"
+            [attr.aria-label]="
+              masquerMotDePasse() ? 'Afficher le mot de passe' : 'Masquer le mot de passe'
+            "
+          >
+            <mat-icon>{{ masquerMotDePasse() ? 'visibility' : 'visibility_off' }}</mat-icon>
+          </button>
+          @if (form.controls.motDePasse.hasError('required')) {
+            <mat-error>Le mot de passe est obligatoire</mat-error>
+          }
+        </mat-form-field>
+
+        <button mat-flat-button type="submit" [disabled]="enCours()">
+          {{ enCours() ? 'Connexion…' : 'Se connecter' }}
+        </button>
+      </form>
+
+      <p class="lien-bas">Pas de compte ? <a routerLink="/inscription">Créer un compte</a></p>
+
+      <div class="demo">
+        <span>Comptes de démonstration :</span>
+        <button mat-stroked-button type="button" (click)="remplirDemo('admin@secutrack.local')">
+          Admin
+        </button>
+        <button mat-stroked-button type="button" (click)="remplirDemo('analyste@secutrack.local')">
+          Utilisateur
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,25 @@
+# TeamCity en local : un serveur + un agent capable de builder SecuTrack (Java 21 et Node 24).
+# Lancement : cd teamcity && docker compose up -d --build   puis   http://localhost:8111
+services:
+  teamcity-server:
+    image: jetbrains/teamcity-server:latest
+    ports:
+      - "8111:8111"
+    volumes:
+      - tc-data:/data/teamcity_server/datadir
+      - tc-logs:/opt/teamcity/logs
+
+  teamcity-agent:
+    build: ./agent
+    environment:
+      SERVER_URL: http://teamcity-server:8111
+      AGENT_NAME: secutrack-agent
+    volumes:
+      - tc-agent-conf:/data/teamcity_agent/conf
+    depends_on:
+      - teamcity-server
+
+volumes:
+  tc-data:
+  tc-logs:
+  tc-agent-conf:

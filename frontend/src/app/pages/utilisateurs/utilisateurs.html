@@ -1,0 +1,42 @@
+<!--
+  utilisateurs.html
+  Tableau d'administration des rôles (mat-table). Un admin ne peut pas modifier son propre rôle.
+  Rappel de syntaxe : {{ x }} affiche une valeur ; [prop]="x" passe une valeur ; (evt)="f()" réagit à un événement ;
+  @if / @for : affichage conditionnel et boucle ; signal() se lit avec des parenthèses.
+-->
+<h1>Utilisateurs</h1>
+
+<table mat-table [dataSource]="utilisateurs()" class="mat-elevation-z1">
+  <ng-container matColumnDef="nomComplet">
+    <th mat-header-cell *matHeaderCellDef>Nom</th>
+    <td mat-cell *matCellDef="let u">{{ u.nomComplet }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="courriel">
+    <th mat-header-cell *matHeaderCellDef>Courriel</th>
+    <td mat-cell *matCellDef="let u">{{ u.courriel }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="creeLe">
+    <th mat-header-cell *matHeaderCellDef>Inscrit le</th>
+    <td mat-cell *matCellDef="let u">{{ u.creeLe | date: 'dd/MM/yyyy' }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="role">
+    <th mat-header-cell *matHeaderCellDef>Rôle</th>
+    <td mat-cell *matCellDef="let u">
+      <mat-select
+        [value]="u.role"
+        [disabled]="u.courriel === auth.utilisateur()?.courriel"
+        (selectionChange)="changerRole(u, $event.value)"
+        aria-label="Rôle"
+      >
+        <mat-option value="USER">Utilisateur</mat-option>
+        <mat-option value="ADMIN">Administrateur</mat-option>
+      </mat-select>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="colonnes"></tr>
+  <tr mat-row *matRowDef="let u; columns: colonnes"></tr>
+</table>

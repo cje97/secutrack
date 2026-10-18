@@ -1,0 +1,69 @@
+<!--
+  inscription.html
+  Formulaire d'inscription : erreurs locales (mat-error) + erreurs renvoyées par le serveur.
+  Rappel de syntaxe : {{ x }} affiche une valeur ; [prop]="x" passe une valeur ; (evt)="f()" réagit à un événement ;
+  @if / @for : affichage conditionnel et boucle ; signal() se lit avec des parenthèses.
+-->
+<div class="page-auth">
+  <mat-card appearance="outlined">
+    <mat-card-header>
+      <mat-icon mat-card-avatar>person_add</mat-icon>
+      <mat-card-title>Créer un compte</mat-card-title>
+      <mat-card-subtitle>Le compte est créé avec le rôle Utilisateur</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (erreur(); as message) {
+        <p class="alerte" role="alert">{{ message }}</p>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="inscrire()" novalidate>
+        <mat-form-field>
+          <mat-label>Nom complet</mat-label>
+          <input matInput formControlName="nomComplet" autocomplete="name" />
+          <mat-error>Le nom est obligatoire (100 caractères maximum)</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Courriel</mat-label>
+          <input matInput type="email" formControlName="courriel" autocomplete="email" />
+          <mat-error>Courriel invalide</mat-error>
+        </mat-form-field>
+        @if (erreursServeur()['courriel']; as msg) {
+          <p class="erreur-serveur">{{ msg }}</p>
+        }
+
+        <mat-form-field>
+          <mat-label>Mot de passe</mat-label>
+          <input
+            matInput
+            type="password"
+            formControlName="motDePasse"
+            autocomplete="new-password"
+          />
+          <mat-hint>8 caractères minimum, dont au moins un chiffre</mat-hint>
+          <mat-error>8 à 72 caractères, dont au moins un chiffre</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Confirmer le mot de passe</mat-label>
+          <input
+            matInput
+            type="password"
+            formControlName="confirmation"
+            autocomplete="new-password"
+          />
+        </mat-form-field>
+        @if (form.hasError('differents') && form.controls.confirmation.touched) {
+          <p class="erreur-serveur">Les mots de passe ne correspondent pas</p>
+        }
+
+        <button mat-flat-button type="submit" [disabled]="enCours()">
+          {{ enCours() ? 'Création…' : 'Créer mon compte' }}
+        </button>
+      </form>
+
+      <p class="lien-bas">Déjà inscrit ? <a routerLink="/connexion">Se connecter</a></p>
+    </mat-card-content>
+  </mat-card>
+</div>

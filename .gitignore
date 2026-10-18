@@ -1,0 +1,16 @@
+# Backend
+backend/target/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+
+# IDE et système
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# Secrets locaux
+.env

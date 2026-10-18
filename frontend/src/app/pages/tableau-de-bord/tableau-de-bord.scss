@@ -1,0 +1,57 @@
+.entete {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.cartes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  mat-card {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    color: var(--mat-sys-on-surface-variant);
+  }
+  .nombre {
+    font: var(--mat-sys-display-small);
+    color: var(--mat-sys-on-surface);
+  }
+  .critique .nombre {
+    color: #b91c1c;
+  }
+}
+.filtres {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 1rem;
+
+  .recherche {
+    flex: 1 1 16rem;
+  }
+}
+.tableau {
+  overflow-x: auto;
+  border-radius: 8px;
+}
+.ligne {
+  cursor: pointer;
+}
+.ligne:hover {
+  background: var(--mat-sys-surface-container-high);
+}
+.titre {
+  font-weight: 500;
+}
+.vide {
+  padding: 2rem;
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant);
+}
+.bouton-supprimer {
+  color: #b91c1c;
+}

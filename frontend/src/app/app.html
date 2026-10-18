@@ -1,0 +1,45 @@
+<!--
+  app.html
+  Coquille de l'application : barre d'outils (seulement si connecté) + <router-outlet> où s'affiche la page courante.
+  Rappel de syntaxe : {{ x }} affiche une valeur ; [prop]="x" passe une valeur ; (evt)="f()" réagit à un événement ;
+  @if / @for : affichage conditionnel et boucle ; signal() se lit avec des parenthèses.
+-->
+@if (auth.estConnecte()) {
+  <mat-toolbar>
+    <a routerLink="/" class="logo"><mat-icon>shield</mat-icon> SecuTrack</a>
+
+    <nav>
+      <a
+        mat-button
+        routerLink="/"
+        routerLinkActive="actif"
+        [routerLinkActiveOptions]="{ exact: true }"
+        >Tableau de bord</a
+      >
+      <a mat-button routerLink="/tickets/nouveau" routerLinkActive="actif">Nouveau ticket</a>
+      @if (auth.estAdmin()) {
+        <a mat-button routerLink="/utilisateurs" routerLinkActive="actif">Utilisateurs</a>
+      }
+    </nav>
+
+    <span class="espace"></span>
+
+    <button mat-button [matMenuTriggerFor]="menu" class="profil">
+      <mat-icon>account_circle</mat-icon>
+      {{ auth.utilisateur()?.nomComplet }}
+      <span class="role" [class.admin]="auth.estAdmin()">{{
+        auth.estAdmin() ? 'ADMIN' : 'USER'
+      }}</span>
+    </button>
+    <mat-menu #menu="matMenu">
+      <div class="menu-courriel">{{ auth.utilisateur()?.courriel }}</div>
+      <button mat-menu-item (click)="auth.deconnecter()">
+        <mat-icon>logout</mat-icon> Se déconnecter
+      </button>
+    </mat-menu>
+  </mat-toolbar>
+}
+
+<main>
+  <router-outlet />
+</main>

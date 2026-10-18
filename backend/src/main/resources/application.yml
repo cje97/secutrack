@@ -1,0 +1,65 @@
+# ======================================================================
+# Configuration principale de l'API SecuTrack.
+# ${VARIABLE:valeur} = lit la variable d'environnement VARIABLE, sinon utilise "valeur".
+# Le profil "docker" (application-docker.yml) surcharge certaines valeurs.
+# ======================================================================
+spring:
+  application:
+    name: secutrack-api
+  datasource:
+    # Base H2 en mémoire pour le développement (perdue à chaque redémarrage).
+    # MODE=PostgreSQL : H2 imite le comportement de PostgreSQL utilisé en production.
+    url: jdbc:h2:mem:secutrack;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      # update : Hibernate crée/modifie les tables d'après les entités (pratique en développement).
+      # En production, on préfère "validate" + des migrations Flyway (voir ticket SEC-5).
+      ddl-auto: update
+    # false : pas de requêtes SQL cachées pendant la conversion en JSON ;
+    # tout doit être chargé dans le service, à l'intérieur de la transaction.
+    open-in-view: false
+  threads:
+    virtual:
+      # Threads virtuels de Java 21 : Tomcat peut traiter beaucoup plus de requêtes simultanées
+      enabled: true
+  data:
+    web:
+      pageable:
+        # Format JSON stable des pages : { "content": [...], "page": { size, number, totalElements, totalPages } }
+        serialization-mode: via-dto
+
+server:
+  port: 8080
+
+# Actuator : endpoints de supervision. On n'expose que health et info
+# (jamais "*" : /actuator/env ou /heapdump peuvent révéler des secrets).
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        # Active /actuator/health/liveness et /readiness (sondes utilisées par Kubernetes)
+        enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+# Propriétés propres à SecuTrack, lues par la classe SecutrackProperties
+secutrack:
+  jwt:
+    # Au moins 32 caractères (HS256). En production : variable d'environnement JWT_SECRET, jamais dans Git.
+    secret: ${JWT_SECRET:secret-de-developpement-a-changer-absolument-0123456789}
+    duree-minutes: 120
+  demo:
+    # Comptes admin@ / analyste@ / dev@secutrack.local et 5 tickets créés si la base est vide
+    actif: ${DEMO_ACTIF:true}
+    mot-de-passe: ${DEMO_MOT_DE_PASSE:Demo1234!}
+  # Origines autorisées à appeler l'API depuis un navigateur (CORS) : le serveur de dev Angular
+  cors-origines:
+    - http://localhost:4200

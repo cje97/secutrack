@@ -1,0 +1,63 @@
+<!--
+  ticket-formulaire.html
+  Formulaire réactif de création / modification. formControlName relie chaque champ au FormGroup.
+  Rappel de syntaxe : {{ x }} affiche une valeur ; [prop]="x" passe une valeur ; (evt)="f()" réagit à un événement ;
+  @if / @for : affichage conditionnel et boucle ; signal() se lit avec des parenthèses.
+-->
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>{{ id() ? 'Modifier le ticket #' + id() : 'Nouveau ticket' }}</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    @if (erreur(); as message) {
+      <p class="alerte" role="alert">{{ message }}</p>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="enregistrer()" novalidate>
+      <mat-form-field>
+        <mat-label>Titre</mat-label>
+        <input matInput formControlName="titre" maxlength="150" />
+        <mat-hint align="end">{{ form.controls.titre.value.length }} / 150</mat-hint>
+        <mat-error>Le titre est obligatoire</mat-error>
+      </mat-form-field>
+      @if (erreursServeur()['titre']; as msg) {
+        <p class="erreur-serveur">{{ msg }}</p>
+      }
+
+      <div class="ligne">
+        <mat-form-field>
+          <mat-label>Type</mat-label>
+          <mat-select formControlName="type">
+            @for (t of types; track t) {
+              <mat-option [value]="t">{{ libType[t] }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Sévérité</mat-label>
+          <mat-select formControlName="severite">
+            @for (s of severites; track s) {
+              <mat-option [value]="s">{{ libSeverite[s] }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field>
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" rows="8" maxlength="4000"></textarea>
+        <mat-hint>Contexte, systèmes touchés, actions déjà réalisées…</mat-hint>
+        <mat-error>4000 caractères maximum</mat-error>
+      </mat-form-field>
+
+      <div class="boutons">
+        <a mat-button [routerLink]="id() ? ['/tickets', id()] : ['/']">Annuler</a>
+        <button mat-flat-button type="submit" [disabled]="enCours()">
+          {{ enCours() ? 'Enregistrement…' : 'Enregistrer' }}
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

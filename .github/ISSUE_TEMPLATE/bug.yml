@@ -1,0 +1,41 @@
+name: Anomalie
+description: Signaler un comportement incorrect
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      placeholder: Ce qui ne fonctionne pas.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Étapes pour reproduire
+      placeholder: |
+        1. Se connecter avec analyste@secutrack.local
+        2. Ouvrir le ticket #3
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: attendu
+    attributes:
+      label: Résultat attendu / résultat obtenu
+    validations:
+      required: true
+  - type: dropdown
+    id: gravite
+    attributes:
+      label: Gravité
+      options: ["Bloquante", "Majeure", "Mineure", "Cosmétique"]
+    validations:
+      required: true
+  - type: textarea
+    id: technique
+    attributes:
+      label: Détails techniques
+      description: Code HTTP, réponse ProblemDetail, extrait de log (sans données sensibles)
+      render: text

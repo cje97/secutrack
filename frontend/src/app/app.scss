@@ -1,0 +1,42 @@
+mat-toolbar {
+  gap: 0.5rem;
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-right: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: inherit;
+}
+nav .actif {
+  background: color-mix(in srgb, var(--mat-sys-primary) 12%, transparent);
+}
+.espace {
+  flex: 1;
+}
+.role {
+  margin-left: 0.5rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: var(--mat-sys-surface-container-highest);
+}
+.role.admin {
+  background: #b91c1c;
+  color: white;
+}
+.menu-courriel {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+main {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+}

@@ -1,0 +1,23 @@
+mat-card {
+  max-width: 48rem;
+  margin: 0 auto;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 1rem;
+}
+.ligne {
+  display: flex;
+  gap: 1rem;
+  mat-form-field {
+    flex: 1;
+  }
+}
+.boutons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}

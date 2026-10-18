@@ -1,0 +1,35 @@
+mat-card {
+  margin-top: 1rem;
+}
+.pastilles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.info {
+  color: var(--mat-sys-on-surface-variant);
+  font-style: italic;
+}
+.description {
+  white-space: pre-line;
+  line-height: 1.6;
+}
+.gestion {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.assignation {
+  min-width: 16rem;
+}
+.assigne-lecture {
+  padding-top: 1rem;
+}
+.maj {
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.85rem;
+}

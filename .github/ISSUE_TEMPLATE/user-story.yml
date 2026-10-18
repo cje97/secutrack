@@ -1,0 +1,46 @@
+name: User story
+description: Nouvelle fonctionnalité décrite du point de vue de l'utilisateur
+title: "[Story] "
+labels: ["user-story"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Une user story décrit un besoin, pas une solution technique.
+        Format : En tant que <rôle>, je veux <action>, afin de <bénéfice>.
+  - type: textarea
+    id: story
+    attributes:
+      label: User story
+      placeholder: |
+        En tant qu'analyste, je veux filtrer les tickets que j'ai créés,
+        afin de suivre rapidement mes propres déclarations.
+    validations:
+      required: true
+  - type: textarea
+    id: criteres
+    attributes:
+      label: Critères d'acceptation (format Étant donné / Quand / Alors)
+      placeholder: |
+        Étant donné que je suis connecté en tant que USER
+        Quand j'active le filtre « Créés par moi »
+        Alors seuls les tickets dont je suis le créateur sont affichés
+    validations:
+      required: true
+  - type: dropdown
+    id: priorite
+    attributes:
+      label: Priorité
+      options: ["Haute", "Moyenne", "Basse"]
+    validations:
+      required: true
+  - type: dropdown
+    id: estimation
+    attributes:
+      label: Estimation (points)
+      options: ["1", "2", "3", "5", "8", "13"]
+  - type: textarea
+    id: technique
+    attributes:
+      label: Notes techniques (optionnel)
+      placeholder: Endpoints, entités ou composants touchés, impacts sécurité...

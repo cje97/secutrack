@@ -1,0 +1,93 @@
+<!--
+  ticket-detail.html
+  Détail d'un ticket. Les boutons et listes affichés dépendent des droits calculés dans ticket-detail.ts.
+  Rappel de syntaxe : {{ x }} affiche une valeur ; [prop]="x" passe une valeur ; (evt)="f()" réagit à un événement ;
+  @if / @for : affichage conditionnel et boucle ; signal() se lit avec des parenthèses.
+-->
+<a mat-button routerLink="/"><mat-icon>arrow_back</mat-icon> Tableau de bord</a>
+
+@if (erreur(); as message) {
+  <p class="alerte" role="alert">{{ message }}</p>
+}
+
+@if (ticket(); as t) {
+  <mat-card appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>#{{ t.id }} — {{ t.titre }}</mat-card-title>
+      <mat-card-subtitle>
+        {{ libType[t.type] }} · créé par {{ t.createur.nomComplet }} le
+        {{ t.creeLe | date: 'dd/MM/yyyy HH:mm' }}
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="pastilles">
+        <span [class]="'pastille severite-' + t.severite"
+          >Sévérité : {{ libSeverite[t.severite] }}</span
+        >
+        <span [class]="'pastille statut-' + t.statut">{{ libStatut[t.statut] }}</span>
+        @if (estFerme()) {
+          <span class="info">Ce ticket est fermé : il n'est plus modifiable.</span>
+        }
+      </div>
+
+      <h3>Description</h3>
+      <p class="description">{{ t.description || 'Aucune description.' }}</p>
+
+      <mat-divider />
+
+      <div class="gestion">
+        <mat-form-field>
+          <mat-label>Statut</mat-label>
+          <mat-select
+            [value]="t.statut"
+            [disabled]="!peutChangerStatut()"
+            (selectionChange)="changerStatut($event.value)"
+          >
+            @for (s of statutsPermis(); track s) {
+              <mat-option [value]="s">{{ libStatut[s] }}</mat-option>
+            }
+          </mat-select>
+          @if (!auth.estAdmin()) {
+            <mat-hint>Résolu et Fermé : réservé aux administrateurs</mat-hint>
+          }
+        </mat-form-field>
+
+        @if (auth.estAdmin()) {
+          <mat-form-field class="assignation">
+            <mat-label>Assigné à</mat-label>
+            <mat-select
+              [value]="t.assigne?.id ?? null"
+              [disabled]="estFerme()"
+              (selectionChange)="assigner($event.value)"
+            >
+              <mat-option [value]="null">Non assigné</mat-option>
+              @for (u of utilisateurs(); track u.id) {
+                <mat-option [value]="u.id">{{ u.nomComplet }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        } @else {
+          <p class="assigne-lecture">
+            Assigné à : <strong>{{ t.assigne?.nomComplet ?? 'personne' }}</strong>
+          </p>
+        }
+      </div>
+
+      <p class="maj">Dernière mise à jour : {{ t.misAJourLe | date: 'dd/MM/yyyy HH:mm' }}</p>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      @if (peutModifier()) {
+        <a mat-stroked-button [routerLink]="['/tickets', t.id, 'modifier']"
+          ><mat-icon>edit</mat-icon> Modifier</a
+        >
+      }
+      @if (auth.estAdmin()) {
+        <button mat-flat-button class="bouton-danger" (click)="supprimer()">
+          <mat-icon>delete</mat-icon> Supprimer
+        </button>
+      }
+    </mat-card-actions>
+  </mat-card>
+}

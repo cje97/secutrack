@@ -1,0 +1,172 @@
+<!--
+  Syntaxe des templates Angular utilisée ici :
+    {{ valeur }}                 interpolation : affiche une valeur
+    [propriete]="expr"           property binding : passe une valeur à un élément ou composant
+    (evenement)="methode()"      event binding : réagit à un événement (clic, changement...)
+    @if / @else, @for            blocs de contrôle (affichage conditionnel, boucle)
+    stats()                      lecture d'un signal (toujours avec des parenthèses)
+    mat-table, *matCellDef       tableau Angular Material : chaque ng-container définit une colonne
+-->
+<div class="entete">
+  <h1>Tableau de bord</h1>
+  <a mat-flat-button routerLink="/tickets/nouveau"><mat-icon>add</mat-icon> Nouveau ticket</a>
+</div>
+
+@if (stats(); as s) {
+  <section class="cartes" aria-label="Statistiques">
+    <mat-card appearance="outlined"
+      ><span class="nombre">{{ s.total }}</span
+      ><span>Tickets au total</span></mat-card
+    >
+    <mat-card appearance="outlined"
+      ><span class="nombre">{{ s.parStatut.OUVERT }}</span
+      ><span>Ouverts</span></mat-card
+    >
+    <mat-card appearance="outlined"
+      ><span class="nombre">{{ s.parStatut.EN_COURS }}</span
+      ><span>En cours</span></mat-card
+    >
+    <mat-card appearance="outlined" class="critique">
+      <span class="nombre">{{ s.actifsParSeverite.CRITIQUE }}</span
+      ><span>Critiques actifs</span>
+    </mat-card>
+    <mat-card appearance="outlined"
+      ><span class="nombre">{{ s.assignesAMoi }}</span
+      ><span>Assignés à moi</span></mat-card
+    >
+  </section>
+}
+
+<section class="filtres" aria-label="Filtres">
+  <mat-form-field class="recherche">
+    <mat-label>Rechercher</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput [formControl]="rechercheCtrl" placeholder="Titre ou description" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Statut</mat-label>
+    <mat-select [value]="statut()" (selectionChange)="statut.set($event.value)">
+      <mat-option [value]="null">Tous</mat-option>
+      @for (s of statuts; track s) {
+        <mat-option [value]="s">{{ libStatut[s] }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Sévérité</mat-label>
+    <mat-select [value]="severite()" (selectionChange)="severite.set($event.value)">
+      <mat-option [value]="null">Toutes</mat-option>
+      @for (s of severites; track s) {
+        <mat-option [value]="s">{{ libSeverite[s] }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Type</mat-label>
+    <mat-select [value]="type()" (selectionChange)="type.set($event.value)">
+      <mat-option [value]="null">Tous</mat-option>
+      @for (t of types; track t) {
+        <mat-option [value]="t">{{ libType[t] }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-slide-toggle [checked]="assignesAMoi()" (change)="assignesAMoi.set($event.checked)">
+    Assignés à moi
+  </mat-slide-toggle>
+
+  <button mat-button type="button" (click)="reinitialiser()">Réinitialiser</button>
+</section>
+
+@if (erreur(); as message) {
+  <p class="alerte" role="alert">{{ message }}</p>
+}
+
+<div class="tableau mat-elevation-z1">
+  @if (chargement()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+
+  <table
+    mat-table
+    [dataSource]="lignes()"
+    matSort
+    matSortActive="creeLe"
+    matSortDirection="desc"
+    (matSortChange)="trier($event)"
+  >
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>#</th>
+      <td mat-cell *matCellDef="let t">{{ t.id }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="titre">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Titre</th>
+      <td mat-cell *matCellDef="let t" class="titre">{{ t.titre }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef>Type</th>
+      <td mat-cell *matCellDef="let t">{{ libelleType(t) }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="severite">
+      <th mat-header-cell *matHeaderCellDef>Sévérité</th>
+      <td mat-cell *matCellDef="let t">
+        <span [class]="'pastille severite-' + t.severite">{{ libelleSeverite(t) }}</span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="statut">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Statut</th>
+      <td mat-cell *matCellDef="let t">
+        <span [class]="'pastille statut-' + t.statut">{{ libelleStatut(t) }}</span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="assigne">
+      <th mat-header-cell *matHeaderCellDef>Assigné à</th>
+      <td mat-cell *matCellDef="let t">{{ t.assigne?.nomComplet ?? '—' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="creeLe">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Créé le</th>
+      <td mat-cell *matCellDef="let t">{{ t.creeLe | date: 'dd/MM/yyyy HH:mm' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let t">
+        <button
+          mat-icon-button
+          class="bouton-supprimer"
+          matTooltip="Supprimer (administrateur)"
+          aria-label="Supprimer le ticket"
+          (click)="supprimer(t, $event)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="colonnes()"></tr>
+    <tr mat-row *matRowDef="let t; columns: colonnes()" class="ligne" (click)="ouvrir(t)"></tr>
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell vide" [attr.colspan]="colonnes().length">
+        Aucun ticket ne correspond aux filtres.
+      </td>
+    </tr>
+  </table>
+
+  <mat-paginator
+    [length]="total()"
+    [pageIndex]="pageIndex()"
+    [pageSize]="pageTaille()"
+    [pageSizeOptions]="[5, 10, 25, 50]"
+    (page)="changerPage($event)"
+    aria-label="Pagination des tickets"
+  />
+</div>

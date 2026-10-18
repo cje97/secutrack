@@ -1,0 +1,8 @@
+# Profil "docker" : activé par SPRING_PROFILES_ACTIVE=docker dans docker-compose.yml.
+# Ces valeurs remplacent celles de application.yml : on passe de H2 à PostgreSQL.
+# "db" est le nom du service PostgreSQL dans docker-compose : Docker le résout comme un nom d'hôte.
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://db:5432/secutrack}
+    username: ${DB_USER:secutrack}
+    password: ${DB_PASSWORD:secutrack}
