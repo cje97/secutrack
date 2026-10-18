@@ -31,7 +31,7 @@ jobs:
 
       - name: Rapports de tests (en cas d'échec)
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: rapports-surefire
           path: backend/target/surefire-reports/
