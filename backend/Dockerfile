@@ -8,7 +8,7 @@ COPY src ./src
 RUN mvn -B -q package -DskipTests
 
 # ---------- Étape 2 : image d'exécution légère ----------
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:24-jre
 WORKDIR /app
 # Ne jamais exécuter l'application en root dans un conteneur
 RUN groupadd --system secutrack && useradd --system --gid secutrack secutrack
